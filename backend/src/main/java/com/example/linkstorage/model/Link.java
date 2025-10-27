@@ -2,10 +2,13 @@ package com.example.linkstorage.model;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.Lob;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
@@ -27,8 +30,9 @@ public class Link {
     @Column(name = "thumbnail_url")
     private String thumbnailUrl;
 
-    @Column(nullable = false)
-    private String category;
+    @ManyToOne(optional = false, fetch = FetchType.EAGER)
+    @JoinColumn(name = "category_id", nullable = false)
+    private Category category;
 
     @Lob
     private String memo;
@@ -39,7 +43,7 @@ public class Link {
     public Link() {
     }
 
-    public Link(String url, String title, String thumbnailUrl, String category) {
+    public Link(String url, String title, String thumbnailUrl, Category category) {
         this.url = url;
         this.title = title;
         this.thumbnailUrl = thumbnailUrl;
@@ -74,11 +78,11 @@ public class Link {
         this.thumbnailUrl = thumbnailUrl;
     }
 
-    public String getCategory() {
+    public Category getCategory() {
         return category;
     }
 
-    public void setCategory(String category) {
+    public void setCategory(Category category) {
         this.category = category;
     }
 

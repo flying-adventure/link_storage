@@ -13,8 +13,9 @@ async function handleResponse(response) {
   return response.json();
 }
 
-export async function fetchLinks() {
-  const response = await fetch('/api/links');
+export async function fetchLinks(categoryId) {
+  const query = typeof categoryId === 'number' ? `?categoryId=${categoryId}` : '';
+  const response = await fetch(`/api/links${query}`);
   return handleResponse(response);
 }
 
@@ -36,8 +37,47 @@ export async function updateMemo(id, memo) {
   return handleResponse(response);
 }
 
+export async function updateLinkCategory(id, categoryId) {
+  const response = await fetch(`/api/links/${id}/category`, {
+    method: 'PATCH',
+    headers: BASE_HEADERS,
+    body: JSON.stringify({ categoryId })
+  });
+  return handleResponse(response);
+}
+
 export async function deleteLink(id) {
   const response = await fetch(`/api/links/${id}`, {
+    method: 'DELETE'
+  });
+  return handleResponse(response);
+}
+
+export async function fetchCategories() {
+  const response = await fetch('/api/categories');
+  return handleResponse(response);
+}
+
+export async function createCategory(name, color) {
+  const response = await fetch('/api/categories', {
+    method: 'POST',
+    headers: BASE_HEADERS,
+    body: JSON.stringify({ name, color })
+  });
+  return handleResponse(response);
+}
+
+export async function updateCategory(id, name, color) {
+  const response = await fetch(`/api/categories/${id}`, {
+    method: 'PUT',
+    headers: BASE_HEADERS,
+    body: JSON.stringify({ name, color })
+  });
+  return handleResponse(response);
+}
+
+export async function deleteCategory(id) {
+  const response = await fetch(`/api/categories/${id}`, {
     method: 'DELETE'
   });
   return handleResponse(response);

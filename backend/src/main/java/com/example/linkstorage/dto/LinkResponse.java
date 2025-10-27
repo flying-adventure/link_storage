@@ -8,11 +8,11 @@ public class LinkResponse {
     private String url;
     private String title;
     private String thumbnailUrl;
-    private String category;
+    private CategoryResponse category;
     private String memo;
     private OffsetDateTime createdAt;
 
-    public LinkResponse(Long id, String url, String title, String thumbnailUrl, String category, String memo, OffsetDateTime createdAt) {
+    public LinkResponse(Long id, String url, String title, String thumbnailUrl, CategoryResponse category, String memo, OffsetDateTime createdAt) {
         this.id = id;
         this.url = url;
         this.title = title;
@@ -28,7 +28,7 @@ public class LinkResponse {
                 link.getUrl(),
                 link.getTitle(),
                 link.getThumbnailUrl(),
-                link.getCategory(),
+                CategoryResponse.from(link.getCategory()),
                 link.getMemo(),
                 link.getCreatedAt()
         );
@@ -50,7 +50,7 @@ public class LinkResponse {
         return thumbnailUrl;
     }
 
-    public String getCategory() {
+    public CategoryResponse getCategory() {
         return category;
     }
 
