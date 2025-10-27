@@ -21,7 +21,7 @@ function CategoryManagementPage() {
       const data = await fetchCategories();
       setCategories(data);
     } catch (err) {
-      setError('카테고리를 불러오는 중 문제가 발생했습니다.');
+      setError('An error occurred while loading categories.');
       console.error(err);
     }
   }, []);
@@ -41,7 +41,7 @@ function CategoryManagementPage() {
       setNewCategory({ name: '', color: DEFAULT_CATEGORY_COLOR });
       await loadCategories();
     } catch (err) {
-      setError('카테고리를 생성하는 중 문제가 발생했습니다.');
+      setError('An error occurred while creating the category.');
       console.error(err);
     }
   };
@@ -64,21 +64,21 @@ function CategoryManagementPage() {
     setError(null);
     try {
       await updateCategory(
-        editingCategoryId,
-        editingCategory.name.trim(),
-        editingCategory.color.trim()
+          editingCategoryId,
+          editingCategory.name.trim(),
+          editingCategory.color.trim()
       );
       setEditingCategoryId(null);
       setEditingCategory({ name: '', color: DEFAULT_CATEGORY_COLOR });
       await loadCategories();
     } catch (err) {
-      setError('카테고리를 수정하는 중 오류가 발생했습니다.');
+      setError('An error occurred while updating the category.');
       console.error(err);
     }
   };
 
   const handleDeleteCategory = async (categoryId) => {
-    if (!window.confirm('이 카테고리를 삭제하시겠습니까?')) {
+    if (!window.confirm('Are you sure you want to delete this category?')) {
       return;
     }
     setError(null);
@@ -89,91 +89,91 @@ function CategoryManagementPage() {
         cancelEditingCategory();
       }
     } catch (err) {
-      setError('카테고리를 삭제하는 중 오류가 발생했습니다. 연결된 링크가 있는지 확인해주세요.');
+      setError('An error occurred while deleting the category. Check if there are any associated links.');
       console.error(err);
     }
   };
 
   return (
-    <div className="app category-management">
-      <header className="app__header category-management__header">
-        <h1>카테고리 관리</h1>
-        <p>카테고리를 추가하고 이름과 색상을 수정하거나 삭제할 수 있습니다.</p>
-        <Link className="category-management__back-link" to="/">
-          ← 메인으로 돌아가기
-        </Link>
-      </header>
-      <main>
-        {error && <div className="app__error">{error}</div>}
-        <section className="category-panel category-management__panel">
-          <h2>사용자 정의 카테고리 관리</h2>
-          <form className="category-form" onSubmit={handleCreateCategory}>
-            <input
-              type="text"
-              placeholder="새 카테고리 이름"
-              value={newCategory.name}
-              onChange={(event) => setNewCategory((prev) => ({ ...prev, name: event.target.value }))}
-              required
-            />
-            <input
-              type="color"
-              value={newCategory.color}
-              onChange={(event) => setNewCategory((prev) => ({ ...prev, color: event.target.value }))}
-              required
-            />
-            <button type="submit">추가</button>
-          </form>
-          <ul className="category-list">
-            {categories.map((category) => (
-              <li key={category.id} className="category-list__item">
-                {editingCategoryId === category.id ? (
-                  <form className="category-edit" onSubmit={handleUpdateCategory}>
-                    <input
-                      type="text"
-                      value={editingCategory.name}
-                      onChange={(event) =>
-                        setEditingCategory((prev) => ({ ...prev, name: event.target.value }))
-                      }
-                      required
-                    />
-                    <input
-                      type="color"
-                      value={editingCategory.color}
-                      onChange={(event) =>
-                        setEditingCategory((prev) => ({ ...prev, color: event.target.value }))
-                      }
-                      required
-                    />
-                    <div className="category-edit__actions">
-                      <button type="submit">저장</button>
-                      <button type="button" onClick={cancelEditingCategory}>
-                        취소
-                      </button>
-                    </div>
-                  </form>
-                ) : (
-                  <div className="category-display">
-                    <span className="category-display__color" style={{ backgroundColor: category.color }} />
-                    <span className="category-display__name">{category.name}</span>
-                    <div className="category-display__actions">
-                      <button type="button" onClick={() => startEditingCategory(category)}>
-                        수정
-                      </button>
-                      <button type="button" onClick={() => handleDeleteCategory(category.id)}>
-                        삭제
-                      </button>
-                    </div>
-                  </div>
-                )}
-              </li>
-            ))}
-            {categories.length === 0 && (
-              <li className="category-list__empty">카테고리를 추가해보세요.</li>
-            )}
-          </ul>
-        </section>
-      </main>
-    </div>
+      <div className="app category-management">
+        <header className="app__header category-management__header">
+          <h1>Manage Categories</h1>
+          <p>Add, edit (name and color), or delete your categories here.</p>
+          <Link className="category-management__back-link" to="/">
+            ← Back to Main
+          </Link>
+        </header>
+        <main>
+          {error && <div className="app__error">{error}</div>}
+          <section className="category-panel category-management__panel">
+            <h2>Manage Categories</h2>
+            <form className="category-form" onSubmit={handleCreateCategory}>
+              <input
+                  type="text"
+                  placeholder="New category name"
+                  value={newCategory.name}
+                  onChange={(event) => setNewCategory((prev) => ({ ...prev, name: event.target.value }))}
+                  required
+              />
+              <input
+                  type="color"
+                  value={newCategory.color}
+                  onChange={(event) => setNewCategory((prev) => ({ ...prev, color: event.target.value }))}
+                  required
+              />
+              <button type="submit">Add</button>
+            </form>
+            <ul className="category-list">
+              {categories.map((category) => (
+                  <li key={category.id} className="category-list__item">
+                    {editingCategoryId === category.id ? (
+                        <form className="category-edit" onSubmit={handleUpdateCategory}>
+                          <input
+                              type="text"
+                              value={editingCategory.name}
+                              onChange={(event) =>
+                                  setEditingCategory((prev) => ({ ...prev, name: event.target.value }))
+                              }
+                              required
+                          />
+                          <input
+                              type="color"
+                              value={editingCategory.color}
+                              onChange={(event) =>
+                                  setEditingCategory((prev) => ({ ...prev, color: event.target.value }))
+                              }
+                              required
+                          />
+                          <div className="category-edit__actions">
+                            <button type="submit">Save</button>
+                            <button type="button" onClick={cancelEditingCategory}>
+                              Cancel
+                            </button>
+                          </div>
+                        </form>
+                    ) : (
+                        <div className="category-display">
+                          <span className="category-display__color" style={{ backgroundColor: category.color }} />
+                          <span className="category-display__name">{category.name}</span>
+                          <div className="category-display__actions">
+                            <button type="button" onClick={() => startEditingCategory(category)}>
+                              Edit
+                            </button>
+                            <button type="button" onClick={() => handleDeleteCategory(category.id)}>
+                              Delete
+                            </button>
+                          </div>
+                        </div>
+                    )}
+                  </li>
+              ))}
+              {categories.length === 0 && (
+                  <li className="category-list__empty">Try adding a new category.</li>
+              )}
+            </ul>
+          </section>
+        </main>
+      </div>
   );
 }
 

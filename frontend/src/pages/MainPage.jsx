@@ -29,7 +29,7 @@ function MainPage() {
       const data = await fetchLinks(categoryId);
       setLinks(data);
     } catch (err) {
-      setError('링크를 불러오는 중 문제가 발생했습니다.');
+      setError('An error occurred while loading links.');
       console.error(err);
     }
   }, []);
@@ -45,7 +45,7 @@ function MainPage() {
         return current;
       });
     } catch (err) {
-      setError('카테고리를 불러오는 중 문제가 발생했습니다.');
+      setError('An error occurred while loading categories.');
       console.error(err);
     }
   }, []);
@@ -70,7 +70,7 @@ function MainPage() {
       await loadLinks(selectedCategoryId);
       setUrl('');
     } catch (err) {
-      setError('AI 저장 중 오류가 발생했습니다. 다시 시도해주세요.');
+      setError('An error occurred while saving. Please try again.');
       console.error(err);
     } finally {
       setSaving(false);
@@ -82,7 +82,7 @@ function MainPage() {
       const updated = await updateMemo(id, memo);
       setLinks((prev) => prev.map((item) => (item.id === id ? updated : item)));
     } catch (err) {
-      setError('메모를 저장하는 중 오류가 발생했습니다.');
+      setError('An error occurred while saving the memo.');
       console.error(err);
     }
   };
@@ -92,21 +92,21 @@ function MainPage() {
       const updated = await updateLinkCategory(id, categoryId);
       setLinks((prev) => prev.map((item) => (item.id === id ? updated : item)));
     } catch (err) {
-      setError('링크 카테고리를 변경하는 중 오류가 발생했습니다.');
+      setError('An error occurred while changing the link category.');
       console.error(err);
       throw err;
     }
   };
 
   const handleDelete = async (id) => {
-    if (!window.confirm('정말 삭제하시겠습니까?')) {
+    if (!window.confirm('Are you sure you want to delete this?')) {
       return;
     }
     try {
       await deleteLink(id);
       setLinks((prev) => prev.filter((item) => item.id !== id));
     } catch (err) {
-      setError('링크를 삭제하는 중 오류가 발생했습니다.');
+      setError('An error occurred while deleting the link.');
       console.error(err);
     }
   };
@@ -138,97 +138,97 @@ function MainPage() {
       setSelectedCategoryId(created.id);
       await loadLinks(created.id);
     } catch (err) {
-      setError('카테고리를 추가하는 중 문제가 발생했습니다.');
+      setError('An error occurred while adding the category.');
       console.error(err);
     }
   };
 
   return (
-    <div className="app">
-      <header className="app__header">
-        <h1>스마트 링크 보관함</h1>
-        <p>AI가 자동으로 제목과 카테고리를 추천해 드립니다.</p>
-      </header>
-      <main>
-        <section className="category-panel">
-          <div className="category-panel__filter">
-            <div className="category-panel__filter-header">
-              <h2>카테고리 필터</h2>
-              <Link className="category-manage-link" to="/categories">
-                카테고리 관리
-              </Link>
-            </div>
-            <div className="category-filter">
-              <button
-                type="button"
-                className={!selectedCategoryId ? 'active' : ''}
-                onClick={() => handleSelectCategory(null)}
-              >
-                전체 보기
-              </button>
-              {categories.map((category) => (
+      <div className="app">
+        <header className="app__header">
+          <h1>Link Stash</h1>
+          <p>Please insert your Link.</p>
+        </header>
+        <main>
+          <section className="category-panel">
+            <div className="category-panel__filter">
+              <div className="category-panel__filter-header">
+                <h2>Category Filter</h2>
+                <Link className="category-manage-link" to="/categories">
+                  Manage Categories
+                </Link>
+              </div>
+              <div className="category-filter">
                 <button
-                  key={category.id}
-                  type="button"
-                  className={selectedCategoryId === category.id ? 'active' : ''}
-                  style={{
-                    borderColor: category.color,
-                    color: selectedCategoryId === category.id ? '#fff' : category.color,
-                    backgroundColor: selectedCategoryId === category.id ? category.color : 'transparent'
-                  }}
-                  onClick={() => handleSelectCategory(category.id)}
+                    type="button"
+                    className={!selectedCategoryId ? 'active' : ''}
+                    onClick={() => handleSelectCategory(null)}
                 >
-                  {category.name}
+                  View All
                 </button>
-              ))}
-              <button
-                type="button"
-                className="category-add-button"
-                onClick={handleOpenNewCategory}
-                aria-label="새 카테고리 추가"
-              >
-                +
-              </button>
+                {categories.map((category) => (
+                    <button
+                        key={category.id}
+                        type="button"
+                        className={selectedCategoryId === category.id ? 'active' : ''}
+                        style={{
+                          borderColor: category.color,
+                          color: selectedCategoryId === category.id ? '#fff' : category.color,
+                          backgroundColor: selectedCategoryId === category.id ? category.color : 'transparent'
+                        }}
+                        onClick={() => handleSelectCategory(category.id)}
+                    >
+                      {category.name}
+                    </button>
+                ))}
+                <button
+                    type="button"
+                    className="category-add-button"
+                    onClick={handleOpenNewCategory}
+                    aria-label="Add new category"
+                >
+                  +
+                </button>
+              </div>
             </div>
-          </div>
-        </section>
-        <form className="save-form" onSubmit={handleSave}>
-          <input
-            type="url"
-            placeholder="URL을 입력하세요"
-            value={url}
-            onChange={(event) => setUrl(event.target.value)}
-            disabled={saving}
-            required
-          />
-          <button type="submit" disabled={saving}>
-            {saving ? '저장 중...' : 'AI로 저장하기'}
-          </button>
-        </form>
-        {error && <div className="app__error">{error}</div>}
-        <section className="link-list">
-          {links.length === 0 && <p className="empty-state">저장된 링크가 없습니다. URL을 추가해보세요.</p>}
-          {links.map((link) => (
-            <LinkCard
-              key={link.id}
-              link={link}
-              categories={categories}
-              onMemoChange={handleMemoChange}
-              onCategoryChange={handleLinkCategoryChange}
-              onDelete={handleDelete}
+          </section>
+          <form className="save-form" onSubmit={handleSave}>
+            <input
+                type="url"
+                placeholder="Enter a URL"
+                value={url}
+                onChange={(event) => setUrl(event.target.value)}
+                disabled={saving}
+                required
             />
-          ))}
-        </section>
-      </main>
-      {isNewCategoryOpen && (
-        <NewCategoryModal
-          value={newCategoryName}
-          onChange={setNewCategoryName}
-          onClose={handleCloseNewCategory}
-          onSubmit={handleCreateCategory}
-        />
-      )}
-    </div>
+            <button type="submit" disabled={saving}>
+              {saving ? 'Saving...' : 'Save Link'}
+            </button>
+          </form>
+          {error && <div className="app__error">{error}</div>}
+          <section className="link-list">
+            {links.length === 0 && <p className="empty-state">No links saved yet. Try adding a new URL.</p>}
+            {links.map((link) => (
+                <LinkCard
+                    key={link.id}
+                    link={link}
+                    categories={categories}
+                    onMemoChange={handleMemoChange}
+                    onCategoryChange={handleLinkCategoryChange}
+                    onDelete={handleDelete}
+                />
+            ))}
+          </section>
+        </main>
+        {isNewCategoryOpen && (
+            <NewCategoryModal
+                value={newCategoryName}
+                onChange={setNewCategoryName}
+                onClose={handleCloseNewCategory}
+                onSubmit={handleCreateCategory}
+            />
+        )}
+      </div>
   );
 }
 
